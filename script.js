@@ -76,6 +76,7 @@ const CourseInfo = {
     },
   ];
   function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
+      // Handling possible errors gracefully
     try {
       if (assignmentGroup.course_id !== courseInfo.id) {
         throw new Error("Sorry: The Assignment Group does not belong to this course!");
@@ -97,14 +98,17 @@ const CourseInfo = {
   
         const dueDate = new Date(assignment.due_at);
         const submittedDate = new Date(submission.submission.submitted_at);
-  
+
+        // Penalty to late assignment
+
         if (submittedDate > dueDate) {
           const daysLate = Math.floor((submittedDate - dueDate) / (1000 * 60 * 60 * 24));
           const latePenalty = Math.min(10 * daysLate, 100);
   
           submission.submission.score = Math.max(0, submission.submission.score - latePenalty);
         }
-  
+          // Processing grades
+
         const learnerIndex = result.findIndex(item => item.id === submission.learner_id);
   
         if (learnerIndex === -1) {
